@@ -103,14 +103,5 @@
 		#gpio-cells = <2>;
 		interrupt-controller;
 		#interrupt-cells = <2>;
-		gpio-line-names = "display_sensor";
-		gpio-line-numbers = <11>;
-	};
-
-	backlight@51 {
-		compatible = "victron,gxdisp-backlight";
-		reg = <0x51>;
-		default-on;
-		default-brightness = <15>;
 	};
 };
