@@ -79,6 +79,8 @@
 			clock-names = "cpu";
 			operating-points-v2 = <&cpu0_opp_table>;
 			#cooling-cells = <2>;
+			cooling-min-level = <0>;
+			cooling-max-level = <15>;
 		};
 
 		cpu1: cpu@1 {
@@ -112,13 +114,33 @@
 		};
 	};
 
-	pmu {
-		compatible = "arm,cortex-a7-pmu";
-		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH>,
-			     <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH>,
-			     <GIC_SPI 122 IRQ_TYPE_LEVEL_HIGH>,
-			     <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
-		interrupt-affinity = <&cpu0>, <&cpu1>, <&cpu2>, <&cpu3>;
+	thermal-zones {
+		cpu-thermal {
+			/* milliseconds */
+			polling-delay-passive = <250>;
+			polling-delay = <1000>;
+			thermal-sensors = <&ths>;
+
+			trips {
+				cpu_hot_trip: cpu-warm {
+					temperature = <65000>;
+					hysteresis = <2000>;
+					type = "passive";
+				};
+				cpu_very_hot_trip: cpu-very-hot {
+					temperature = <90000>;
+					hysteresis = <2000>;
+					type = "critical";
+				};
+			};
+
+			cooling-maps {
+				cpu-warm-limit {
+					trip = <&cpu_hot_trip>;
+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+				};
+			};
+		};
 	};
 
 	timer {
