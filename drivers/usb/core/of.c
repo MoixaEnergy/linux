@@ -12,6 +12,49 @@
 #include <linux/usb/of.h>
 
 /**
+ * usb_of_get_child_node - Find the device node match port number
+ * @parent: the parent device node
+ * @portnum: the port number which device is connecting
+ *
+ * Find the node from device tree according to its port number.
+ *
+ * Return: On success, a pointer to the device node, %NULL on failure.
+ */
+struct device_node *usb_of_get_child_node(struct device_node *parent,
+					int portnum)
+{
+	struct device_node *node;
+	u32 port;
+
+	for_each_child_of_node(parent, node) {
+		if (!of_property_read_u32(node, "reg", &port)) {
+			if (port == portnum)
+				return node;
+		}
+	}
+
+	return NULL;
+}
+EXPORT_SYMBOL_GPL(usb_of_get_child_node);
+
+struct device_node *usb_of_get_interface_node_orig(struct device_node *parent,
+					int ifnum, int config)
+{
+	struct device_node *node;
+	u32 reg[2];
+
+	for_each_child_of_node(parent, node) {
+		if (!of_property_read_u32_array(node, "reg", reg, 2)) {
+			if (reg[0] == ifnum && reg[1] == config)
+				return of_node_get(node);
+		}
+	}
+
+	return NULL;
+}
+EXPORT_SYMBOL_GPL(usb_of_get_interface_node_orig);
+
+/**
  * usb_of_get_device_node() - get a USB device node
  * @hub: hub to which device is connected
  * @port1: one-based index of port

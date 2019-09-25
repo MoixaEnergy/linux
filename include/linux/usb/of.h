@@ -59,6 +59,24 @@ static inline struct device *usb_of_get_companion_dev(struct device *dev)
 }
 #endif
 
+#if IS_ENABLED(CONFIG_OF)
+struct device_node *usb_of_get_child_node(struct device_node *parent,
+            int portnum);
+struct device_node *usb_of_get_interface_node_orig(struct device_node *parent,
+                                        int ifnum, int config);
+#else
+static inline struct device_node *
+usb_of_get_device_node(struct usb_device *hub, int port1)
+{
+	return NULL;
+}
+struct device_node *usb_of_get_interface_node(struct device_node *parent,
+					int ifnum, int config)
+{
+	return NULL;
+}
+#endif
+
 #if IS_ENABLED(CONFIG_OF) && IS_ENABLED(CONFIG_USB_SUPPORT)
 enum usb_phy_interface of_usb_get_phy_mode(struct device_node *np);
 #else
