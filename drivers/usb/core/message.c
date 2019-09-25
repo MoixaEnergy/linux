@@ -1956,7 +1956,7 @@ free_interfaces:
 			intf->dev.of_node = of_node_get(dev->dev.of_node);
 		else
 			intf->dev.of_node =
-				usb_of_get_interface_node(dev->dev.of_node,
+				usb_of_get_interface_node_orig(dev->dev.of_node,
 						  alt->desc.bInterfaceNumber,
 						  configuration);
 
